@@ -2,6 +2,7 @@ function submitForm(event) {
   event.preventDefault(); 
   var form = event.target; 
   var status = document.getElementById('status'); 
+
   var firstName = document.getElementById('inputFirstName').value; 
   var lastName = document.getElementById('inputLastName').value; 
   var email = document.getElementById('inputEmail').value; 
@@ -19,20 +20,25 @@ function submitForm(event) {
   var formData = new FormData(form); 
 
   fetch(form.action, { 
-    method: form.method, 
-    body: formData,
-    mode: "no-cors" // 👈 أضفنا ده
+    method: 'POST', 
+    body: formData
   }) 
-  .then(function() {  // 👈 شلنا تحليل الرد
-    status.innerHTML = 'Message sent successfully ✓✓'; 
-    status.style.color = 'green'; 
-    form.reset(); 
-  }) 
-  .catch(function(error) { 
-    console.error(error); 
+  .then(response => response.json())
+  .then(data => {
+    if (data.result === 'success') {
+      status.innerHTML = 'Message sent successfully ✓✓'; 
+      status.style.color = 'green'; 
+      form.reset();
+    } else {
+      status.innerHTML = 'Oops! There was a problem sending the message.'; 
+      status.style.color = 'red'; 
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
     status.innerHTML = 'Oops! There was a problem sending the message.'; 
     status.style.color = 'red'; 
-  }); 
+  });
 }
 
 
@@ -40,5 +46,6 @@ function submitForm(event) {
 
 
   
+
 
 
